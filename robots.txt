@@ -1,1 +1,1 @@
-Sitemap: https://ashwinr64.github.io/blog/sitemap.xml
+Sitemap: https://blog.ashwinramesh.co.in/sitemap.xml
