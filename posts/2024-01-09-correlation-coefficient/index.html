@@ -240,11 +240,16 @@ r(X, Y) = \frac{\text{cov}(X, Y)}{\sigma_X \times \sigma_Y}
 </ul>
 <p>Now, let’s create sample plots to show positive, negative and zero corellations:</p>
 <div class="cell" data-execution_count="1">
+<details open="">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <div class="cell" data-execution_count="4">
+<details open="">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Positive correlation</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>X_pos <span class="op">=</span> np.random.rand(<span class="dv">100</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Y_pos <span class="op">=</span> X_pos <span class="op">+</span> np.random.normal(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="dv">100</span>)  <span class="co"># adding some noise</span></span>
@@ -291,6 +296,7 @@ r(X, Y) = \frac{\text{cov}(X, Y)}{\sigma_X \times \sigma_Y}
 <span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Positive correlation coefficient: </span><span class="sc">{</span>corr_coef_pos<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Negative correlation coefficient: </span><span class="sc">{</span>corr_coef_neg<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Zero correlation coefficient: </span><span class="sc">{</span>corr_coef_no_corr<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <p><img src="index_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
 </div>
