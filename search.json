@@ -7,38 +7,45 @@
     "text": "I write about tech, finance and all things I learn"
   },
   {
-    "objectID": "posts/correlation-coefficient/index.html",
-    "href": "posts/correlation-coefficient/index.html",
+    "objectID": "posts/2024-01-09-correlation-coefficient/index.html",
+    "href": "posts/2024-01-09-correlation-coefficient/index.html",
     "title": "Correlation Coefficent",
     "section": "",
     "text": "Hello, dear readers! As I embark on this journey to explore and write about statistical, financial concepts, I want to start with a candid confession: I am quite new to this field myself. This blog is as much a part of my learning process as I hope it will be for yours. That said, let the learning begin!"
   },
   {
-    "objectID": "posts/correlation-coefficient/index.html#introduction",
-    "href": "posts/correlation-coefficient/index.html#introduction",
+    "objectID": "posts/2024-01-09-correlation-coefficient/index.html#introduction",
+    "href": "posts/2024-01-09-correlation-coefficient/index.html#introduction",
     "title": "Correlation Coefficent",
     "section": "Introduction",
     "text": "Introduction\nThe correlation coefficient is a statistical measure of the strength of a linear relationship between two variables. It is widely used across several fields including finance. This post aims to give a brief overview, usecases and pitfalls while using the concept of corellation specifically the Pearson’s coefficient which is widely used."
   },
   {
-    "objectID": "posts/correlation-coefficient/index.html#what-is-the-pearsons-corellation-coefficient",
-    "href": "posts/correlation-coefficient/index.html#what-is-the-pearsons-corellation-coefficient",
+    "objectID": "posts/2024-01-09-correlation-coefficient/index.html#what-is-the-pearsons-corellation-coefficient",
+    "href": "posts/2024-01-09-correlation-coefficient/index.html#what-is-the-pearsons-corellation-coefficient",
     "title": "Correlation Coefficent",
     "section": "What is the Pearson’s corellation coefficient?",
     "text": "What is the Pearson’s corellation coefficient?\nIts values can range from -1 to 1. A correlation coefficient of -1 describes a perfect negative, or inverse, correlation, with values in one series rising as those in the other decline, and vice versa. A coefficient of 1 shows a perfect positive correlation, or a direct relationship. The closer to 0 the correlation coefficient is, the weaker the relationship between the variables. Person’s correlation \\(r\\) is given by:\n\\[\nr(X, Y) = \\frac{\\text{cov}(X, Y)}{\\sigma_X \\times \\sigma_Y}\n\\]\nwhere, * \\(cov\\) is the covariance between \\(X\\) and \\(Y\\) * \\(\\sigma\\) represents the standard deviation.\nNow, let’s create sample plots to show positive, negative and zero corellations:\n\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\n\n# Positive correlation\nX_pos = np.random.rand(100)\nY_pos = X_pos + np.random.normal(0, 0.1, 100)  # adding some noise\n\n# Negative correlation\nX_neg = np.random.rand(100)\nY_neg = -X_neg + np.random.normal(0, 0.1, 100)  # adding some noise\n\n# No correlation\nX_no_corr = np.random.rand(100)\nY_no_corr = np.random.rand(100)\n\nplt.figure(figsize=(18, 6))\n\n# Plot for positive correlation\nplt.subplot(1, 3, 1)\nplt.scatter(X_pos, Y_pos, color='green')\nplt.title('Positive Correlation')\nplt.xlabel('X Value')\nplt.ylabel('Y Value')\n\n# Plot for negative correlation\nplt.subplot(1, 3, 2)\nplt.scatter(X_neg, Y_neg, color='red')\nplt.title('Negative Correlation')\nplt.xlabel('X Value')\nplt.ylabel('Y Value')\n\n# Plot for no correlation\nplt.subplot(1, 3, 3)\nplt.scatter(X_no_corr, Y_no_corr)\nplt.title('No Correlation')\nplt.xlabel('X Value')\nplt.ylabel('Y Value')\n\nplt.tight_layout()\nplt.show()\n\n# Calculate correlation coefficient\ncorr_coef_pos = np.corrcoef(X_pos, Y_pos)[0, 1]\ncorr_coef_neg = np.corrcoef(X_neg, Y_neg)[0, 1]\ncorr_coef_no_corr = np.corrcoef(X_no_corr, Y_no_corr)[0, 1]\n\nprint(f\"Positive correlation coefficient: {corr_coef_pos}\")\nprint(f\"Negative correlation coefficient: {corr_coef_neg}\")\nprint(f\"Zero correlation coefficient: {corr_coef_no_corr}\")\n\n\n\n\nPositive correlation coefficient: 0.9433421569708851\nNegative correlation coefficient: -0.9563626173762685\nZero correlation coefficient: 0.09457565533744634\n\n\nIn the above example, we can make the following observations: * The correlation coefficient is close to 1 for the positively correlated * The correlation coefficient is close to -1 for the negatively correlated * The correlation coefficient is close to 0 for the random samples"
   },
   {
-    "objectID": "posts/correlation-coefficient/index.html#uses-in-finance",
-    "href": "posts/correlation-coefficient/index.html#uses-in-finance",
+    "objectID": "posts/2024-01-09-correlation-coefficient/index.html#uses-in-finance",
+    "href": "posts/2024-01-09-correlation-coefficient/index.html#uses-in-finance",
     "title": "Correlation Coefficent",
     "section": "Uses in Finance",
     "text": "Uses in Finance"
+  },
+  {
+    "objectID": "posts/2022-10-01-hello-world/index.html",
+    "href": "posts/2022-10-01-hello-world/index.html",
+    "title": "Hello World!",
+    "section": "",
+    "text": "Hello World!"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Blog",
     "section": "",
-    "text": "Correlation Coefficent\n\n\n\n\n\n\n\nstatistics\n\n\n\n\n\n\n\n\n\n\n\nJan 9, 2024\n\n\nAshwin Ramesh\n\n\n\n\n\n\nNo matching items"
+    "text": "Correlation Coefficent\n\n\n\n\n\n\n\nstatistics\n\n\n\n\n\n\n\n\n\n\n\nJan 9, 2024\n\n\nAshwin Ramesh\n\n\n\n\n\n\n  \n\n\n\n\nHello World!\n\n\n\n\n\n\n\nblogging\n\n\n\n\n\n\n\n\n\n\n\nOct 1, 2022\n\n\nChristian Wittmann\n\n\n\n\n\n\nNo matching items"
   }
 ]
