@@ -3,6 +3,7 @@ project:
 
 website:
   title: "blog"
+  site-url: https://blog.ashwinramesh.co.in/
   navbar:
     right:
       - about.qmd
@@ -15,5 +16,5 @@ format:
     theme: cosmo
     css: styles.css
 
-
-
+resources:
+  - CNAME
