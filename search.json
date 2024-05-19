@@ -11,49 +11,7 @@
     "href": "index.html",
     "title": "Blog",
     "section": "",
-    "text": "Subsampling tick data efficiently using Redis\n\n\n\n\n\n\nsoftware\n\n\n\n\n\n\n\n\n\nJan 9, 2024\n\n\nAshwin Ramesh\n\n\n\n\n\n\n\n\n\n\n\n\nHello World!\n\n\n\n\n\n\nblogging\n\n\n\n\n\n\n\n\n\nOct 1, 2022\n\n\nChristian Wittmann\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "posts/2024-05-13-subsampling-ticks-efficiently/index.html",
-    "href": "posts/2024-05-13-subsampling-ticks-efficiently/index.html",
-    "title": "Subsampling tick data efficiently using Redis",
-    "section": "",
-    "text": "In financial markets, tick data refers to the detailed record of every trade executed on an exchange. In liquid markets, where thousands of trades occur every second, transmitting and processing this high-frequency data can be computationally intensive. Even if the data is available, retail traders do not have the resources to leverage it effectively for real-time decision-making. To address this challenge, exchanges and brokers often provide aggregated price information to their clients."
-  },
-  {
-    "objectID": "posts/2024-05-13-subsampling-ticks-efficiently/index.html#introduction",
-    "href": "posts/2024-05-13-subsampling-ticks-efficiently/index.html#introduction",
-    "title": "Subsampling tick data efficiently using Redis",
-    "section": "",
-    "text": "In financial markets, tick data refers to the detailed record of every trade executed on an exchange. In liquid markets, where thousands of trades occur every second, transmitting and processing this high-frequency data can be computationally intensive. Even if the data is available, retail traders do not have the resources to leverage it effectively for real-time decision-making. To address this challenge, exchanges and brokers often provide aggregated price information to their clients."
-  },
-  {
-    "objectID": "posts/2024-05-13-subsampling-ticks-efficiently/index.html#subsampling-aggregated-price-data-for-mft-and-lft",
-    "href": "posts/2024-05-13-subsampling-ticks-efficiently/index.html#subsampling-aggregated-price-data-for-mft-and-lft",
-    "title": "Subsampling tick data efficiently using Redis",
-    "section": "Subsampling aggregated price data for MFT and LFT",
-    "text": "Subsampling aggregated price data for MFT and LFT\nFor medium frequency trading (MFT) and low frequency trading (LFT), the aggregated price data needs to be further subsampled to generate OHLC (open, high, low, close) candles. However, managing different timeframes for multiple tickers can be complex and challenging to optimize. In this blog post, we will explore an efficient approach that utilizes native Redis features, such as Redis Timeseries(https://redis.io/docs/latest/develop/data-types/timeseries/), Compaction(https://redis.io/docs/latest/develop/data-types/timeseries/quickstart/#compaction) and Key-Space notifications(https://redis.io/docs/latest/develop/use/keyspace-notifications/) which we will cover in detail."
-  },
-  {
-    "objectID": "posts/2024-05-13-subsampling-ticks-efficiently/index.html#why-redis",
-    "href": "posts/2024-05-13-subsampling-ticks-efficiently/index.html#why-redis",
-    "title": "Subsampling tick data efficiently using Redis",
-    "section": "Why Redis?",
-    "text": "Why Redis?\nRedis is a versatile in-memory key-value store. It can not only be used to store key-value pairs, but also has a plethora of plugins which make it capable of handling various data types and use cases. Redis can also be extended to work with relational data using Redis OM (Object Mapping) (https://redis.io/docs/stack/om/).\nOther notable features of Redis include built-in support for data structures like lists, sets, sorted sets, hashes, and streams, as well as powerful pub/sub messaging capabilities. These features, combined with its in-memory storage and high performance, make Redis a go-to choice for caching."
-  },
-  {
-    "objectID": "posts/2024-05-13-subsampling-ticks-efficiently/index.html#solution-overview",
-    "href": "posts/2024-05-13-subsampling-ticks-efficiently/index.html#solution-overview",
-    "title": "Subsampling tick data efficiently using Redis",
-    "section": "Solution Overview",
-    "text": "Solution Overview\nRedis serves as a caching layer where all the aggregated price data is cached. Since this is time-series data, we can use Redis Timeseries to efficiently store and query the data. Redis Timeseries is a simple key-value store, but the keys are timestamps and the values are price data (the value can be any relevant information). Once the data is ingested into Redis, we can create rules to subsample the data into 1m, 15m, 1h, and 1d OHLC (Open, High, Low, Close) candles. This process utilizes a feature called compaction, which automatically subsamples data based on specified aggregation functions such as sum, avg, min, max, first, last, etc.\nTo create a candle for a specific timeframe, we need to define four rules with the respective aggregation functions: open (first), high (max), low (min), and close (last). By creating these rules, we can generate candles of different timeframes and store them in the cache.\nThe next challenge is to efficiently process the candle data as soon as it is generated. A naive approach would be to use a while loop with a sleep interval equivalent to the required timeframe and query the latest data in each iteration. However, a more optimized approach is to use Keyspace notifications. With this feature, Redis sends a notification whenever any changes occur in a specified key. By subscribing to these notifications, we can efficiently query Redis only when a new candle is available, eliminating the need for constant polling."
-  },
-  {
-    "objectID": "posts/2024-05-13-subsampling-ticks-efficiently/index.html#setup",
-    "href": "posts/2024-05-13-subsampling-ticks-efficiently/index.html#setup",
-    "title": "Subsampling tick data efficiently using Redis",
-    "section": "Setup",
-    "text": "Setup\n\nThe easiest way one can run redis is using the official redis container images available on DockerHub:\n\n\n\nCode\n!docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest\n\n\n\nNow let us install a plugin called RedisTimeseriesManager. This plugin helps us easily create and manage several compaction rules.\n\n\n\nCode\n!pip install redis-timeseries-manager\n\n\nCollecting redis-timeseries-manager\n  Using cached redis_timeseries_manager-2.3-py3-none-any.whl.metadata (17 kB)\nCollecting redis&gt;=4.0 (from redis-timeseries-manager)\n  Using cached redis-5.0.4-py3-none-any.whl.metadata (9.3 kB)\nRequirement already satisfied: pandas&gt;=1 in /opt/miniconda3/envs/ds/lib/python3.12/site-packages (from redis-timeseries-manager) (2.2.2)\nRequirement already satisfied: numpy&gt;=1.26.0 in /opt/miniconda3/envs/ds/lib/python3.12/site-packages (from pandas&gt;=1-&gt;redis-timeseries-manager) (1.26.4)\nRequirement already satisfied: python-dateutil&gt;=2.8.2 in /opt/miniconda3/envs/ds/lib/python3.12/site-packages (from pandas&gt;=1-&gt;redis-timeseries-manager) (2.9.0.post0)\nRequirement already satisfied: pytz&gt;=2020.1 in /opt/miniconda3/envs/ds/lib/python3.12/site-packages (from pandas&gt;=1-&gt;redis-timeseries-manager) (2024.1)\nRequirement already satisfied: tzdata&gt;=2022.7 in /opt/miniconda3/envs/ds/lib/python3.12/site-packages (from pandas&gt;=1-&gt;redis-timeseries-manager) (2024.1)\nRequirement already satisfied: six&gt;=1.5 in /opt/miniconda3/envs/ds/lib/python3.12/site-packages (from python-dateutil&gt;=2.8.2-&gt;pandas&gt;=1-&gt;redis-timeseries-manager) (1.16.0)\nUsing cached redis_timeseries_manager-2.3-py3-none-any.whl (18 kB)\nUsing cached redis-5.0.4-py3-none-any.whl (251 kB)\nInstalling collected packages: redis, redis-timeseries-manager\nSuccessfully installed redis-5.0.4 redis-timeseries-manager-2.3\n\n\n\nNow let’s get to coding this solution. Let us first create a class that defines the compaction rules. This code is picked up from the examples of RedisTimeseriesManager.\n\n\n\nCode\nimport time, datetime, random\nfrom pytz import timezone\n\nfrom redis_timeseries_manager import RedisTimeseriesManager\n\nsettings = {\n    'host': 'localhost',\n    'port': 6379,\n    'db': 0,\n    'password': None,\n}\n\nclass MarketData(RedisTimeseriesManager):\n    _name = 'markets'\n    _lines = ['open', 'high', 'low', 'close']\n    _timeframes = {\n        'raw': {'retention_secs': 60*60*24*4}, # retention 4 days\n        '1m': {'retention_secs': 60*60*24*7, 'bucket_size_secs': 60}, # retention 7 day; timeframe 60 secs\n        '1h': {'retention_secs': 60*60*24*30, 'bucket_size_secs': 60*60}, # retention 1 month; timeframe 3600 secs\n        '1d': {'retention_secs': 60*60*24*365, 'bucket_size_secs': 60*60*24}, # retention 1 year; timeframe 86400 secs\n    }\n\n    #compaction rules\n    def _create_rule(self, c1:str, c2:str, line:str, timeframe_name:str, timeframe_specs:str, source_key:str, dest_key:str):\n        if line == 'open':\n            aggregation_type = 'first'\n        elif line == 'close':\n            aggregation_type = 'last'\n        elif line == 'high':\n            aggregation_type = 'max'\n        elif line == 'low':\n            aggregation_type = 'min'\n        else:\n            return\n        bucket_size_secs = timeframe_specs['bucket_size_secs']\n        self._set_rule(source_key, dest_key, aggregation_type, bucket_size_secs)\n    \n    @staticmethod\n    def print_data(data):\n        for ts, open, high, low, close, volume in data:\n            print(f\"{datetime.datetime.fromtimestamp(ts, tz=timezone('UTC')):%Y-%m-%d %H:%M:%S}, open: {open}, high: {high}, low: {low}, close: {close}, volume: {volume}\")\n\nmd = MarketData(**settings)"
+    "text": "Hello World!\n\n\n\n\n\n\nblogging\n\n\n\n\n\n\n\n\n\nOct 1, 2022\n\n\nChristian Wittmann\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/2022-10-01-hello-world/index.html",
