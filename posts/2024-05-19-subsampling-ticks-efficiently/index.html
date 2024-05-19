@@ -242,7 +242,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>Now let’s get to coding this solution. Let us first create a class that defines the compaction rules. This code is picked up from the examples of <a href="https://pypi.org/project/redis-timeseries-manager">RedisTimeseriesManager</a>.</li>
 </ul>
-<div id="cell-6" class="cell" data-execution_count="2">
+<div id="cell-6" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time, datetime, random</span>
@@ -300,63 +300,164 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Finally, we create an instance of the MarketData class called md, which can be used to interact with the market data stored in Redis.</li>
 </ul>
 <p>Let us write a function to generate dummy data:</p>
-<div id="cell-9" class="cell" data-execution_count="10">
+<div id="cell-9" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_ticks(secs<span class="op">=</span><span class="dv">120</span>):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    tickers <span class="op">=</span> [</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"crypto"</span>, <span class="st">"btcusd"</span>, (<span class="dv">28000</span>, <span class="dv">29000</span>), (<span class="dv">100</span>, <span class="dv">1000</span>)),</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"crypto"</span>, <span class="st">"ethusd"</span>, (<span class="dv">1800</span>, <span class="dv">2000</span>), (<span class="dv">100</span>, <span class="dv">1000</span>)),</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"stocks"</span>, <span class="st">"aapl"</span>, (<span class="dv">130</span>, <span class="dv">140</span>), (<span class="dv">100</span>, <span class="dv">1000</span>)),  <span class="co"># Apple</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"stocks"</span>, <span class="st">"amzn"</span>, (<span class="dv">2300</span>, <span class="dv">2400</span>), (<span class="dv">100</span>, <span class="dv">1000</span>)),  <span class="co"># Amazon</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"stocks"</span>, <span class="st">"googl"</span>, (<span class="dv">2200</span>, <span class="dv">2300</span>), (<span class="dv">100</span>, <span class="dv">1000</span>)),  <span class="co"># Google</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"crypto"</span>, <span class="st">"btcusd"</span>, (<span class="dv">28000</span>, <span class="dv">29000</span>)), <span class="co"># BTC</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"crypto"</span>, <span class="st">"ethusd"</span>, (<span class="dv">1800</span>, <span class="dv">2000</span>)), <span class="co"># ETH</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"stocks"</span>, <span class="st">"aapl"</span>, (<span class="dv">130</span>, <span class="dv">140</span>)),  <span class="co"># Apple</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"stocks"</span>, <span class="st">"amzn"</span>, (<span class="dv">2300</span>, <span class="dv">2400</span>)),  <span class="co"># Amazon</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"stocks"</span>, <span class="st">"googl"</span>, (<span class="dv">2200</span>, <span class="dv">2300</span>)),  <span class="co"># Google</span></span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    ]</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    n_tickers <span class="op">=</span> <span class="bu">len</span>(tickers)</span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    sec <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> sec <span class="op">&lt;</span> secs:</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        ts <span class="op">=</span> <span class="bu">int</span>(time.time())</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_tickers):</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>            c1, c2, price_range, volume_range <span class="op">=</span> tickers[i]</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            price <span class="op">=</span> random.randint(<span class="op">*</span>price_range)</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            volume <span class="op">=</span> random.randint(<span class="op">*</span>volume_range)</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"ts: </span><span class="sc">{</span>ts<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>c2<span class="sc">.</span>upper()<span class="sc">}</span><span class="ss">: (</span><span class="sc">{</span>price<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>volume<span class="sc">}</span><span class="ss">)"</span>)</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>            md.insert(</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>                data<span class="op">=</span>[[ts, price, price, price, price, volume]],</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                c1<span class="op">=</span>c1,</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                c2<span class="op">=</span>c2,</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>                create_inplace<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="dv">1</span>)</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        sec <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>generate_ticks(secs<span class="op">=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Generating Ticks"</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> sec <span class="op">&lt;</span> secs:</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        ts <span class="op">=</span> <span class="bu">int</span>(time.time())</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_tickers):</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            c1, c2, price_range <span class="op">=</span> tickers[i]</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>            price <span class="op">=</span> random.randint(<span class="op">*</span>price_range)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>            <span class="co"># print(f"ts: {ts}, {c2.upper()}: {price}")</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>            md.insert(</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                data<span class="op">=</span>[[ts, price, price, price, price]],</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                c1<span class="op">=</span>c1,</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>                c2<span class="op">=</span>c2,</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>                create_inplace<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="dv">1</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        sec <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co"># generate_ticks(secs=1000)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>ts: 1716122279, BTCUSD: (28994, 137)
-ts: 1716122279, ETHUSD: (1878, 932)
-ts: 1716122279, AAPL: (140, 306)
-ts: 1716122279, AMZN: (2336, 197)
-ts: 1716122279, GOOGL: (2216, 841)
-ts: 1716122280, BTCUSD: (28038, 960)
-ts: 1716122280, ETHUSD: (1953, 613)
-ts: 1716122280, AAPL: (132, 995)
-ts: 1716122280, AMZN: (2316, 650)
-ts: 1716122280, GOOGL: (2286, 541)
-ts: 1716122281, BTCUSD: (28474, 857)
-ts: 1716122281, ETHUSD: (1826, 398)
-ts: 1716122281, AAPL: (140, 797)
-ts: 1716122281, AMZN: (2371, 757)
-ts: 1716122281, GOOGL: (2227, 981)</code></pre>
-</div>
 </div>
 <p>The <em>generate_ticks()</em> function uses the <em>MarketData</em> to insert random data to redis. One can use the <em>md.insert()</em> to insert data from the broker.</p>
 <p>Now that we have inserted data, redis would automatically take care of subsampling the data into 1m, 1h and 1d data and this data would have an expiration of 7 days, 1 month, 1 year respectively.</p>
 <p>Let us write some code to subscribe to this information</p>
+<div id="cell-11" class="cell" data-execution_count="29">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> handle_event(event):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> subscribe_candle(timeframes<span class="op">=</span>[<span class="st">'1m'</span>]):</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    tickers <span class="op">=</span> [</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"crypto"</span>, <span class="st">"btcusd"</span>, (<span class="dv">28000</span>, <span class="dv">29000</span>)), <span class="co"># BTC</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"crypto"</span>, <span class="st">"ethusd"</span>, (<span class="dv">1800</span>, <span class="dv">2000</span>)), <span class="co"># ETH</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"stocks"</span>, <span class="st">"aapl"</span>, (<span class="dv">130</span>, <span class="dv">140</span>)),  <span class="co"># Apple</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"stocks"</span>, <span class="st">"amzn"</span>, (<span class="dv">2300</span>, <span class="dv">2400</span>)),  <span class="co"># Amazon</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"stocks"</span>, <span class="st">"googl"</span>, (<span class="dv">2200</span>, <span class="dv">2300</span>)),  <span class="co"># Google</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> md.client</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    r.config_set(<span class="st">'notify-keyspace-events'</span>, <span class="st">'KEA'</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Subscribe to all the tickers</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    pubsub <span class="op">=</span> r.pubsub()</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> timeframe <span class="kw">in</span> timeframes:</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> ticker <span class="kw">in</span> tickers:</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>            market, scrip, _ <span class="op">=</span> ticker</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>            key <span class="op">=</span> <span class="ss">f"__keyspace@0__:markets:</span><span class="sc">{</span>market<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>scrip<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>timeframe<span class="sc">}</span><span class="ss">:close"</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>            pubsub.psubscribe(key)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> message <span class="kw">in</span> pubsub.listen():</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> message.get(<span class="st">"type"</span>) <span class="op">==</span> <span class="st">"pmessage"</span>:</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>            channel <span class="op">=</span> message.get(<span class="st">"channel"</span>).decode()</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>            <span class="co"># print(f"{channel}: {message}")</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>            parts <span class="op">=</span> channel.split(<span class="st">":"</span>)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>            market <span class="op">=</span> parts[<span class="dv">2</span>]</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>            scrip <span class="op">=</span> parts[<span class="dv">3</span>]</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>            timeframe <span class="op">=</span> parts[<span class="dv">4</span>]</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>            <span class="co"># "__keyspace@0__:markets:stocks:amzn:1m:close"</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>            data <span class="op">=</span> md.read_last_n_records(</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>                c1<span class="op">=</span>market,</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>                c2<span class="op">=</span>scrip,</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>                timeframe<span class="op">=</span>timeframe,</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>                <span class="co"># minimum_timestamp=0,</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>                n<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(market, scrip, timeframe, data)</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="co"># subscribe_candle()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-12" class="cell" data-execution_count="30">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> threading</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>t1 <span class="op">=</span> threading.Thread(target<span class="op">=</span>generate_ticks,  args<span class="op">=</span>(<span class="dv">500</span>,))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>t2 <span class="op">=</span> threading.Thread(target<span class="op">=</span>subscribe_candle)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>t1.start()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>t2.start()</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>t1.join()</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>t2.join()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generating Ticks
+crypto ethusd 1m (True, True, [[1716136020.0, 1958.0, 1996.0, 1800.0, 1996.0]])
+stocks aapl 1m (True, True, [[1716136020.0, 139.0, 140.0, 130.0, 130.0]])
+stocks amzn 1m (True, True, [[1716136020.0, 2356.0, 2366.0, 2307.0, 2365.0]])
+stocks googl 1m (True, True, [[1716136020.0, 2249.0, 2290.0, 2216.0, 2263.0]])
+crypto btcusd 1m (True, True, [[1716136080.0, 28686.0, 28868.0, 28016.0, 28473.0]])
+crypto ethusd 1m (True, True, [[1716136080.0, 1974.0, 1987.0, 1804.0, 1870.0]])
+stocks aapl 1m (True, True, [[1716136080.0, 138.0, 140.0, 130.0, 131.0]])
+stocks amzn 1m (True, True, [[1716136080.0, 2329.0, 2390.0, 2302.0, 2335.0]])
+stocks googl 1m (True, True, [[1716136080.0, 2224.0, 2299.0, 2207.0, 2281.0]])
+crypto btcusd 1m (True, True, [[1716136140.0, 28988.0, 28988.0, 28105.0, 28598.0]])
+crypto ethusd 1m (True, True, [[1716136140.0, 1819.0, 1990.0, 1801.0, 1843.0]])
+stocks aapl 1m (True, True, [[1716136140.0, 138.0, 140.0, 130.0, 132.0]])
+stocks amzn 1m (True, True, [[1716136140.0, 2392.0, 2397.0, 2303.0, 2340.0]])
+stocks googl 1m (True, True, [[1716136140.0, 2216.0, 2299.0, 2201.0, 2230.0]])
+crypto btcusd 1m (True, True, [[1716136200.0, 28018.0, 28990.0, 28018.0, 28327.0]])
+crypto ethusd 1m (True, True, [[1716136200.0, 1810.0, 1998.0, 1801.0, 1841.0]])
+stocks aapl 1m (True, True, [[1716136200.0, 136.0, 140.0, 130.0, 137.0]])
+stocks amzn 1m (True, True, [[1716136200.0, 2364.0, 2399.0, 2300.0, 2302.0]])
+stocks googl 1m (True, True, [[1716136200.0, 2216.0, 2300.0, 2203.0, 2260.0]])
+crypto btcusd 1m (True, True, [[1716136260.0, 28040.0, 29000.0, 28016.0, 28693.0]])
+crypto ethusd 1m (True, True, [[1716136260.0, 1947.0, 1996.0, 1803.0, 1918.0]])
+stocks aapl 1m (True, True, [[1716136260.0, 140.0, 140.0, 130.0, 140.0]])
+stocks amzn 1m (True, True, [[1716136260.0, 2325.0, 2399.0, 2300.0, 2331.0]])
+stocks googl 1m (True, True, [[1716136260.0, 2244.0, 2295.0, 2200.0, 2230.0]])
+crypto btcusd 1m (True, True, [[1716136320.0, 28914.0, 28998.0, 28002.0, 28998.0]])
+crypto ethusd 1m (True, True, [[1716136320.0, 1965.0, 1998.0, 1804.0, 1877.0]])
+stocks aapl 1m (True, True, [[1716136320.0, 136.0, 140.0, 130.0, 133.0]])
+stocks amzn 1m (True, True, [[1716136320.0, 2366.0, 2399.0, 2303.0, 2372.0]])
+stocks googl 1m (True, True, [[1716136320.0, 2269.0, 2292.0, 2202.0, 2282.0]])
+crypto btcusd 1m (True, True, [[1716136380.0, 28637.0, 28978.0, 28019.0, 28539.0]])
+crypto ethusd 1m (True, True, [[1716136380.0, 1952.0, 1998.0, 1801.0, 1994.0]])
+stocks aapl 1m (True, True, [[1716136380.0, 136.0, 140.0, 130.0, 133.0]])
+stocks amzn 1m (True, True, [[1716136380.0, 2385.0, 2394.0, 2300.0, 2301.0]])
+stocks googl 1m (True, True, [[1716136380.0, 2203.0, 2298.0, 2200.0, 2253.0]])
+crypto btcusd 1m (True, True, [[1716136440.0, 28586.0, 28993.0, 28050.0, 28993.0]])
+crypto ethusd 1m (True, True, [[1716136440.0, 1813.0, 1998.0, 1800.0, 1854.0]])
+stocks aapl 1m (True, True, [[1716136440.0, 132.0, 140.0, 130.0, 131.0]])
+stocks amzn 1m (True, True, [[1716136440.0, 2388.0, 2400.0, 2305.0, 2370.0]])
+stocks googl 1m (True, True, [[1716136440.0, 2241.0, 2298.0, 2200.0, 2289.0]])
+crypto btcusd 1m (True, True, [[1716136500.0, 28720.0, 28979.0, 28023.0, 28839.0]])
+crypto ethusd 1m (True, True, [[1716136500.0, 1845.0, 1999.0, 1800.0, 1876.0]])
+stocks aapl 1m (True, True, [[1716136500.0, 132.0, 140.0, 130.0, 135.0]])
+stocks amzn 1m (True, True, [[1716136500.0, 2332.0, 2400.0, 2312.0, 2384.0]])
+stocks googl 1m (True, True, [[1716136500.0, 2243.0, 2300.0, 2200.0, 2266.0]])
+crypto btcusd 1m (True, True, [[1716136560.0, 28733.0, 28982.0, 28075.0, 28435.0]])
+crypto ethusd 1m (True, True, [[1716136560.0, 1817.0, 1998.0, 1800.0, 1975.0]])
+stocks aapl 1m (True, True, [[1716136560.0, 137.0, 140.0, 130.0, 133.0]])
+stocks amzn 1m (True, True, [[1716136560.0, 2303.0, 2399.0, 2301.0, 2334.0]])
+stocks googl 1m (True, True, [[1716136560.0, 2266.0, 2299.0, 2200.0, 2267.0]])</code></pre>
+</div>
+<div class="cell-output cell-output-error">
+<pre><code>KeyboardInterrupt: </code></pre>
+</div>
+</div>
 
 
 </section>
