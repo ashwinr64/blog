@@ -290,7 +290,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>md <span class="op">=</span> MarketData(<span class="op">**</span>settings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>The MarketData class does the following: - *_name<em>: The name of the first level of hierarchy (RedisTimeseriesManager uses two additional levels of hierarchies to manage data) - </em>_lines<em>: The different types of data being stored (open, high, low, close prices). - </em>_timeframes<em>: Different time intervals for storing the data (raw, 1-minute, 1-hour, 1-day) and how long to keep the data for each interval. - The </em>_create_rule* method is used to set up rules for automatically aggregating (compacting) the data over time, depending on the type of data (e.g., using the first price for “open”, the last price for “close”, the maximum price for “high”, and the minimum price for “low”). - <em>print_data</em> method is a utility function that takes market data and prints it out in a nice, human-readable format. - Finally, we create an instance of the MarketData class called md, which can be used to interact with the market data stored in Redis.</p>
+<p>The MarketData class does the following:</p>
+<ul>
+<li>*_name*: The name of the first level of hierarchy (RedisTimeseriesManager uses two additional levels of hierarchies to manage data)</li>
+<li>*_lines*: The different types of data being stored (open, high, low, close prices).</li>
+<li>*_timeframes*: Different time intervals for storing the data (raw, 1-minute, 1-hour, 1-day) and how long to keep the data for each interval.</li>
+<li>The *_create_rule* method is used to set up rules for automatically aggregating (compacting) the data over time, depending on the type of data (e.g., using the first price for “open”, the last price for “close”, the maximum price for “high”, and the minimum price for “low”).</li>
+<li><em>print_data</em> method is a utility function that takes market data and prints it out in a nice, human-readable format.</li>
+<li>Finally, we create an instance of the MarketData class called md, which can be used to interact with the market data stored in Redis.</li>
+</ul>
 <p>Let us write a function to generate dummy data:</p>
 <div id="cell-9" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
