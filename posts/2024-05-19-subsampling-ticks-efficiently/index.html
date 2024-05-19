@@ -292,10 +292,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The MarketData class does the following:</p>
 <ul>
-<li>*_name*: The name of the first level of hierarchy (RedisTimeseriesManager uses two additional levels of hierarchies to manage data)</li>
-<li>*_lines*: The different types of data being stored (open, high, low, close prices).</li>
-<li>*_timeframes*: Different time intervals for storing the data (raw, 1-minute, 1-hour, 1-day) and how long to keep the data for each interval.</li>
-<li>The *_create_rule* method is used to set up rules for automatically aggregating (compacting) the data over time, depending on the type of data (e.g., using the first price for “open”, the last price for “close”, the maximum price for “high”, and the minimum price for “low”).</li>
+<li><em>_name</em>: The name of the first level of hierarchy (RedisTimeseriesManager uses two additional levels of hierarchies to manage data)</li>
+<li><em>_lines</em>: The different types of data being stored (open, high, low, close prices).</li>
+<li><em>_timeframes</em>: Different time intervals for storing the data (raw, 1-minute, 1-hour, 1-day) and how long to keep the data for each interval.</li>
+<li>The <em>_create_rule</em> method is used to set up rules for automatically aggregating (compacting) the data over time, depending on the type of data (e.g., using the first price for “open”, the last price for “close”, the maximum price for “high”, and the minimum price for “low”).</li>
 <li><em>print_data</em> method is a utility function that takes market data and prints it out in a nice, human-readable format.</li>
 <li>Finally, we create an instance of the MarketData class called md, which can be used to interact with the market data stored in Redis.</li>
 </ul>
