@@ -18,14 +18,14 @@
     "href": "posts/2024-05-19-subsampling-ticks-efficiently/index.html",
     "title": "Subsampling tick data efficiently using Redis",
     "section": "",
-    "text": "In financial markets, tick data refers to the detailed record of every trade executed on an exchange. In liquid markets, where thousands of trades occur every second, transmitting and processing this high-frequency data can be computationally intensive. Even if the data is available, retail traders do not have the resources to leverage it effectively for real-time decision-making. To address this challenge, exchanges and brokers often provide aggregated price information to their clients."
+    "text": "Redis-Py"
   },
   {
     "objectID": "posts/2024-05-19-subsampling-ticks-efficiently/index.html#introduction",
     "href": "posts/2024-05-19-subsampling-ticks-efficiently/index.html#introduction",
     "title": "Subsampling tick data efficiently using Redis",
-    "section": "",
-    "text": "In financial markets, tick data refers to the detailed record of every trade executed on an exchange. In liquid markets, where thousands of trades occur every second, transmitting and processing this high-frequency data can be computationally intensive. Even if the data is available, retail traders do not have the resources to leverage it effectively for real-time decision-making. To address this challenge, exchanges and brokers often provide aggregated price information to their clients."
+    "section": "Introduction",
+    "text": "Introduction\nIn financial markets, tick data refers to the detailed record of every trade executed on an exchange. In liquid markets, where thousands of trades occur every second, transmitting and processing this high-frequency data can be computationally intensive. Even if the data is available, retail traders do not have the resources to leverage it effectively for real-time decision-making. To address this challenge, exchanges and brokers often provide aggregated price information to their clients."
   },
   {
     "objectID": "posts/2024-05-19-subsampling-ticks-efficiently/index.html#subsampling-aggregated-price-data-for-mft-and-lft",
