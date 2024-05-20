@@ -11,7 +11,7 @@
     "href": "index.html",
     "title": "Blog",
     "section": "",
-    "text": "Subsampling tick data efficiently using Redis\n\n\n\n\n\n\nsoftware\n\n\n\n\n\n\n\n\n\nMay 19, 2024\n\n\nAshwin Ramesh\n\n\n\n\n\n\n\n\n\n\n\n\nHello World!\n\n\n\n\n\n\nblogging\n\n\n\n\n\n\n\n\n\nOct 1, 2022\n\n\nChristian Wittmann\n\n\n\n\n\n\nNo matching items"
+    "text": "Subsampling tick data efficiently using Redis\n\n\n\n\n\n\nsoftware\n\n\n\n\n\n\n\n\n\nMay 19, 2024\n\n\nAshwin Ramesh\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/2024-05-19-subsampling-ticks-efficiently/index.html",
@@ -68,13 +68,6 @@
     "title": "Subsampling tick data efficiently using Redis",
     "section": "Conclusion",
     "text": "Conclusion\nIn this blog post, we have explored how to leverage the native features of Redis to create candles of different timeframes and efficiently process them using an event-driven approach. It’s important to note that enabling keyspace notifications does consume CPU resources. However, the setup process is straightforward and can be accomplished with just a few lines of code. Moreover, the scalable nature of Redis ensures that this approach is highly scalable and can handle large volumes of data.\nAlso, this is my maiden attempt at writing a technical post. I welcome feedback and suggestions. This would be valuable to improve the quality of future posts.\nThank you for reading, and I hope you found this post informative and useful in understanding how to utilize Redis for real-time candle generation and event-driven processing."
-  },
-  {
-    "objectID": "posts/2022-10-01-hello-world/index.html",
-    "href": "posts/2022-10-01-hello-world/index.html",
-    "title": "Hello World!",
-    "section": "",
-    "text": "Hello World!"
   },
   {
     "objectID": "market_data.html",
