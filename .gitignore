@@ -10,3 +10,5 @@ _notebooks/.ipynb_checkpoints
 
 /.quarto/
 .ipynb_checkpoints
+
+.DS_Store
