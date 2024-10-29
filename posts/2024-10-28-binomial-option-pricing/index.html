@@ -210,7 +210,10 @@ window.Quarto = {
    
   <ul>
   <li><a href="#key-assumptions" id="toc-key-assumptions" class="nav-link active" data-scroll-target="#key-assumptions">Key Assumptions</a></li>
-  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
+  <ul class="collapse">
+  <li><a href="#method-1" id="toc-method-1" class="nav-link" data-scroll-target="#method-1">Method 1</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -234,11 +237,63 @@ window.Quarto = {
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
 <ol type="1">
-<li>Setup a portfolio <span class="math inline">\(\Pi\)</span> consisting of a long position in the call option and an appropriate short position in the underlying stock.</li>
+<li>Create a portfolio <span class="math inline">\(\Pi\)</span> with a long call option and a corresponding short position in the stock.</li>
 <li>The one time period model - Replication</li>
 </ol>
+<section id="method-1" class="level3">
+<h3 class="anchored" data-anchor-id="method-1">Method 1</h3>
+<p>Consider a portfolio <span class="math inline">\(\Pi\)</span> with a long call option and short <span class="math inline">\(\Delta\)</span> shares. <span class="math inline">\(V^{\pm}\)</span> denotes the option value corresponding to asset price <span class="math inline">\(S^{\pm}\)</span>:</p>
+<p><span class="math display">\[
+\begin{array}{cc}
+\text{Stock Tree} &amp; \text{Option Tree} \\
+\begin{array}{c}
+&amp; \nearrow &amp; S^+ \\
+S \\
+&amp; \searrow &amp; S^- \\
+\end{array} &amp;
+\begin{array}{c}
+&amp; \nearrow &amp; V^+ \\
+V \\
+&amp; \searrow &amp; V^- \\
+\end{array}
+\end{array}
+\]</span></p>
+<p><span class="math display">\[
+\Pi = V - \Delta S
+\]</span></p>
+<p>At time <span class="math inline">\(T\)</span>, there are two possible outcomes:</p>
+<p><span class="math display">\[
+\Pi^+ = V^+ - \Delta S^+ \\
+\Pi^- = V^- - \Delta S^-
+\]</span></p>
+<p>Choosing <span class="math inline">\(\Delta\)</span> such that <span class="math inline">\(\Pi^+\)</span> and <span class="math inline">\(\Pi^-\)</span> are the same, we get:</p>
+<p><span class="math display">\[
+\Delta = \frac{V^+ - V^-}{S^+ - S^-}
+\]</span></p>
+<p>This choice of <span class="math inline">\(\Delta\)</span> makes <span class="math inline">\(\Pi\)</span> risk-free, so no-arbitrage suggests that the return on <span class="math inline">\(\Pi\)</span> should be the risk-free rate., i.e:</p>
+<p><span class="math display">\[
+e^{rT} \Pi = \Pi^+ = \Pi^- \\
+= V^- - \Delta S^- = V^- - \frac{V^+ - V^-}{S^+ - S^-} S^- \\
+= \frac{V^- (S^+ - S^-) - S^- (V^+ - V^-)}{S^+ - S^-} \\
+= \frac{V^-S^+ - S^-V^+}{S^+ - S^-}
+\]</span></p>
+<p>We know that,</p>
+<p><span class="math display">\[
+\Pi = V - \Delta S
+\]</span></p>
+<p>Substituting,</p>
+<p><span class="math display">\[
+e^{rT} (V - \Delta S) = \frac{V^-S^+ - S^-V^+}{S^+ - S^-} \\
+e^{rT} V = \frac{V^-S^+ - S^-V^+}{S^+ - S^-} + (\frac{V^+ - V^-}{S^+ - S^-}) Se^{rT} \\
+= \frac{(e^{rT} S - S^-)}{S^+ - S^-} V^+  + \frac{(S^+ - e^{rT}S)}{S^+ - S^-} V^-\\
+\]</span></p>
+<p>Notice that the above is a linear combination of <span class="math inline">\(V^+\)</span> and <span class="math inline">\(V^-\)</span> and the coefficients sum to 1.</p>
+<p><span class="math display">\[
+e^{rT} V = q V^+ + (1-q) V^-
+\]</span></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
